@@ -1,12 +1,11 @@
 import flet as ft
-
+import asyncio
 
 class Message:
     def __init__(self, user_name: str, text: str, message_type: str):
         self.user_name = user_name
         self.text = text
         self.message_type = message_type
-
 
 class ChatMessage(ft.Row):
     def __init__(self, message: Message):
@@ -32,7 +31,7 @@ class ChatMessage(ft.Row):
         if user_name:
             return user_name[:1].capitalize()
         else:
-            return "Vacilão que não quis colocar nome"  # or any default value you prefer
+            return "Vacilão que não quis colocar nome"
 
     def get_avatar_color(self, user_name: str):
         colors_lookup = [
@@ -52,8 +51,13 @@ class ChatMessage(ft.Row):
         ]
         return colors_lookup[hash(user_name) % len(colors_lookup)]
 
+async def remove_message_after_delay(chat, message_control, delay=300):
+    await asyncio.sleep(delay)
+    chat.controls.remove(message_control)
+    chat.update()
 
 def main(page: ft.Page):
+    global chat
     page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
     page.title = "Conversinhas"
 
@@ -93,11 +97,13 @@ def main(page: ft.Page):
         elif message.message_type == "login_message":
             m = ft.Text(message.text, italic=True, color=ft.colors.BLACK45, size=12)
         chat.controls.append(m)
-        page.update()
+        chat.update()
+
+        # Agende a remoção da mensagem após 30 segundos
+        asyncio.run(remove_message_after_delay(chat, m))
 
     page.pubsub.subscribe(on_message)
 
-    # A dialog asking for a user display name
     join_user_name = ft.TextField(
         label="Nome",
         autofocus=True,
@@ -112,14 +118,12 @@ def main(page: ft.Page):
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
-    # Chat messages
     chat = ft.ListView(
         expand=True,
         spacing=10,
         auto_scroll=True,
     )
 
-    # A new message entry form
     new_message = ft.TextField(
         hint_text="Escreva ...",
         autofocus=True,
@@ -131,7 +135,6 @@ def main(page: ft.Page):
         on_submit=send_message_click,
     )
 
-    # Add everything to the page
     page.add(
         ft.Container(
             content=chat,
@@ -151,6 +154,5 @@ def main(page: ft.Page):
             ]
         ),
     )
-
 
 ft.app(target=main)
