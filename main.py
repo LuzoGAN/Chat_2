@@ -32,7 +32,7 @@ class ChatMessage(ft.Row):
         if user_name:
             return user_name[:1].capitalize()
         else:
-            return "Unknown"  # or any default value you prefer
+            return "Vacilão que não quis colocar nome"  # or any default value you prefer
 
     def get_avatar_color(self, user_name: str):
         colors_lookup = [
@@ -55,11 +55,11 @@ class ChatMessage(ft.Row):
 
 def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
-    page.title = "Flet Chat"
+    page.title = "Conversinhas"
 
     def join_chat_click(e):
         if not join_user_name.value:
-            join_user_name.error_text = "Name cannot be blank!"
+            join_user_name.error_text = "Sem nome em branco Plis!"
             join_user_name.update()
         else:
             page.session.set("user_name", join_user_name.value)
@@ -68,7 +68,7 @@ def main(page: ft.Page):
             page.pubsub.send_all(
                 Message(
                     user_name=join_user_name.value,
-                    text=f"{join_user_name.value} has joined the chat.",
+                    text=f"o maluco {join_user_name.value} entrou no chat.",
                     message_type="login_message",
                 )
             )
@@ -99,16 +99,16 @@ def main(page: ft.Page):
 
     # A dialog asking for a user display name
     join_user_name = ft.TextField(
-        label="Enter your name to join the chat",
+        label="Nome",
         autofocus=True,
         on_submit=join_chat_click,
     )
     page.dialog = ft.AlertDialog(
         open=True,
         modal=True,
-        title=ft.Text("Welcome!"),
+        title=ft.Text("Bem vindo!"),
         content=ft.Column([join_user_name], width=300, height=70, tight=True),
-        actions=[ft.ElevatedButton(text="Join chat", on_click=join_chat_click)],
+        actions=[ft.ElevatedButton(text="Entre", on_click=join_chat_click)],
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
@@ -121,7 +121,7 @@ def main(page: ft.Page):
 
     # A new message entry form
     new_message = ft.TextField(
-        hint_text="Write a message...",
+        hint_text="Escreva ...",
         autofocus=True,
         shift_enter=True,
         min_lines=1,
@@ -145,7 +145,7 @@ def main(page: ft.Page):
                 new_message,
                 ft.IconButton(
                     icon=ft.icons.SEND_ROUNDED,
-                    tooltip="Send message",
+                    tooltip="Enviar",
                     on_click=send_message_click,
                 ),
             ]
