@@ -1,6 +1,5 @@
 import flet as ft
 
-
 class Message:
     def __init__(self, user_name: str, text: str, message_type: str):
         self.user_name = user_name
@@ -57,21 +56,27 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
     page.title = "Conversinhas"
 
+    logged_in_users = set()
+
     def join_chat_click(e):
         if not join_user_name.value:
             join_user_name.error_text = "Sem nome em branco Plis!"
             join_user_name.update()
         else:
-            page.session.set("user_name", join_user_name.value)
+            user_name = join_user_name.value
+            page.session.set("user_name", user_name)
             page.dialog.open = False
-            new_message.prefix = ft.Text(f"{join_user_name.value}: ")
+            new_message.prefix = ft.Text(f"{user_name}: ")
             page.pubsub.send_all(
                 Message(
-                    user_name=join_user_name.value,
-                    text=f"o maluco {join_user_name.value} entrou no chat.",
+                    user_name=user_name,
+                    text=f"o maluco {user_name} entrou no chat.",
                     message_type="login_message",
                 )
             )
+            if user_name not in logged_in_users:
+                logged_in_users.add(user_name)
+                update_logged_in_users()
             page.update()
 
     def send_message_click(e):
@@ -93,6 +98,12 @@ def main(page: ft.Page):
         elif message.message_type == "login_message":
             m = ft.Text(message.text, italic=True, color=ft.colors.BLACK45, size=12)
         chat.controls.append(m)
+        page.update()
+
+    def update_logged_in_users():
+        user_list.controls.clear()
+        for user in logged_in_users:
+            user_list.controls.append(ft.Text(user))
         page.update()
 
     page.pubsub.subscribe(on_message)
@@ -119,6 +130,13 @@ def main(page: ft.Page):
         auto_scroll=True,
     )
 
+    # List of logged-in users
+    user_list = ft.ListView(
+        expand=True,
+        spacing=10,
+        auto_scroll=True,
+    )
+
     # A new message entry form
     new_message = ft.TextField(
         hint_text="Escreva ...",
@@ -133,11 +151,23 @@ def main(page: ft.Page):
 
     # Add everything to the page
     page.add(
-        ft.Container(
-            content=chat,
-            border=ft.border.all(1, ft.colors.OUTLINE),
-            border_radius=5,
-            padding=10,
+        ft.Row(
+            [
+                ft.Container(
+                    content=chat,
+                    border=ft.border.all(1, ft.colors.OUTLINE),
+                    border_radius=5,
+                    padding=10,
+                    expand=True,
+                ),
+                ft.Container(
+                    content=user_list,
+                    border=ft.border.all(1, ft.colors.OUTLINE),
+                    border_radius=5,
+                    padding=10,
+                    width=200,
+                ),
+            ],
             expand=True,
         ),
         ft.Row(
@@ -151,6 +181,5 @@ def main(page: ft.Page):
             ]
         ),
     )
-
 
 ft.app(target=main)
