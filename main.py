@@ -6,7 +6,6 @@ class Message:
         self.text = text
         self.message_type = message_type
 
-
 class ChatMessage(ft.Row):
     def __init__(self, message: Message):
         super().__init__()
@@ -31,7 +30,7 @@ class ChatMessage(ft.Row):
         if user_name:
             return user_name[:1].capitalize()
         else:
-            return "Vacilão que não quis colocar nome"  # or any default value you prefer
+            return "Vacilão que não quis colocar nome"  # ou qualquer valor padrão que você preferir
 
     def get_avatar_color(self, user_name: str):
         colors_lookup = [
@@ -50,7 +49,6 @@ class ChatMessage(ft.Row):
             ft.colors.YELLOW,
         ]
         return colors_lookup[hash(user_name) % len(colors_lookup)]
-
 
 def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
@@ -74,9 +72,8 @@ def main(page: ft.Page):
                     message_type="login_message",
                 )
             )
-            if user_name not in logged_in_users:
-                logged_in_users.add(user_name)
-                update_logged_in_users()
+            logged_in_users.add(user_name)
+            update_logged_in_users()
             page.update()
 
     def send_message_click(e):
@@ -98,6 +95,9 @@ def main(page: ft.Page):
         elif message.message_type == "login_message":
             m = ft.Text(message.text, italic=True, color=ft.colors.BLACK45, size=12)
         chat.controls.append(m)
+        if message.user_name not in logged_in_users:
+            logged_in_users.add(message.user_name)
+            update_logged_in_users()
         page.update()
 
     def update_logged_in_users():
@@ -108,7 +108,7 @@ def main(page: ft.Page):
 
     page.pubsub.subscribe(on_message)
 
-    # A dialog asking for a user display name
+    # Dialogo pedindo o nome do usuário
     join_user_name = ft.TextField(
         label="Nome",
         autofocus=True,
@@ -123,21 +123,21 @@ def main(page: ft.Page):
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
-    # Chat messages
+    # Mensagens do chat
     chat = ft.ListView(
         expand=True,
         spacing=10,
         auto_scroll=True,
     )
 
-    # List of logged-in users
+    # Lista de usuários logados
     user_list = ft.ListView(
         expand=True,
         spacing=10,
         auto_scroll=True,
     )
 
-    # A new message entry form
+    # Formulário de nova mensagem
     new_message = ft.TextField(
         hint_text="Escreva ...",
         autofocus=True,
@@ -149,7 +149,7 @@ def main(page: ft.Page):
         on_submit=send_message_click,
     )
 
-    # Add everything to the page
+    # Adicionando tudo à página
     page.add(
         ft.Row(
             [
