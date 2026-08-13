@@ -314,6 +314,19 @@ body {
 }
 .msg-body img.em { width: 20px; height: 20px; }
 
+.msg-img {
+  max-width: 280px; max-height: 240px; object-fit: cover;
+  border-radius: 4px; border: 1px solid #cfe0f0;
+  margin-top: 4px; cursor: zoom-in; display: block;
+}
+.msg-img:hover { outline: 2px solid var(--msn-blue); }
+
+.img-viewer {
+  position: fixed; inset: 0; background: rgba(0,0,0,.78); z-index: 300;
+  display: flex; align-items: center; justify-content: center; cursor: zoom-out;
+}
+.img-viewer img { max-width: 92vw; max-height: 92vh; border-radius: 6px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+
 .msg-system { text-align: center; color: var(--muted); font-size: 11px; font-style: italic; margin: 10px 0; }
 .msg-nudge { text-align: center; margin: 12px 0; font-size: 12px; font-weight: bold; color: #c00; }
 
