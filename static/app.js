@@ -421,7 +421,7 @@
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
   });
   $("message-input").addEventListener("input", () => {
-    socket.emit("typing", {});
+    socket.emit("typing");
     $("message-input").style.height = "auto";
     $("message-input").style.height = Math.min($("message-input").scrollHeight, 96) + "px";
   });
@@ -436,7 +436,7 @@
     ov.classList.add("boom");
     setTimeout(() => ov.classList.remove("boom"), 350);
   }
-  $("chat-window").querySelector(".act[title='Nudge! Chamar atenção']").onclick = () => socket.emit("nudge", {});
+  $("chat-window").querySelector(".act[title='Nudge! Chamar atenção']").onclick = () => socket.emit("nudge");
 
   /* ==================== EMOTICONS ==================== */
   const picker = $("emoticon-picker");
