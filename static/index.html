@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSN Messenger — Conversinhas</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- ===================== TELA DE LOGIN ===================== -->
+  <div id="login-screen">
+    <div class="login-window">
+      <div class="login-header">
+        <div class="login-logo">
+          <span class="butterfly">🦋</span>
+          <div class="login-title">
+            <b>MSN Messenger</b>
+            <span class="login-sub">versão 7.5 • Brasil</span>
+          </div>
+        </div>
+        <div class="win-btns"><span class="wb-min">–</span><span class="wb-max">□</span><span class="wb-close">×</span></div>
+      </div>
+
+      <div class="login-body">
+        <p class="login-welcome">Faça login com o seu apelido favorito:<br></p>
+
+        <label class="field-label">Apelido / Exibir nome</label>
+        <input id="login-name" type="text" maxlength="24" placeholder="Ex: perofilo_2k6" autocomplete="off">
+
+        <label class="field-label">Cor do seu nome</label>
+        <div id="name-colors">
+          <span class="swatch active" data-color="#2F5FAD"  style="background:#2F5FAD"></span>
+          <span class="swatch" data-color="#008844" style="background:#008844"></span>
+          <span class="swatch" data-color="#CC0000" style="background:#CC0000"></span>
+          <span class="swatch" data-color="#9933CC" style="background:#9933CC"></span>
+          <span class="swatch" data-color="#FF8C00" style="background:#FF8C00"></span>
+          <span class="swatch" data-color="#E06600" style="background:#E06600"></span>
+          <span class="swatch" data-color="#5A5A5A" style="background:#5A5A5A"></span>
+          <span class="swatch" data-color="#C25A14" style="background:#C25A14"></span>
+        </div>
+
+        <label class="field-label">Sua foto / avatar</label>
+        <div class="avatar-pick-row">
+          <div id="login-avatar-preview" class="avatar-frame st-online av-56"></div>
+          <button id="login-avatar-btn" class="btn" type="button">📷 Escolher foto…</button>
+          <button id="login-avatar-clear" class="btn ghost" type="button">Sem foto</button>
+          <input id="login-avatar-input" type="file" accept="image/*" hidden>
+        </div>
+
+        <label class="field-label">Mensagem pessoal <span class="label-hint">(exibida embaixo do seu nome)</span></label>
+        <input id="login-message" type="text" maxlength="60" placeholder="🎵 No que você está pensando?" autocomplete="off">
+
+        <label class="field-label">Estado / Status</label>
+        <select id="login-status">
+          <option value="online">Online — verde</option>
+          <option value="ausente">Ausente — laranja</option>
+          <option value="ocupado">Ocupado — vermelho</option>
+        </select>
+
+        <button id="login-submit" class="btn big" type="button">Entrar no MSN</button>
+      </div>
+    </div>
+    <p class="login-foot">MSN Conversinhas — releitura nostálgica em HTML + Python</p>
+  </div>
+
+  <!-- ===================== APP PRINCIPAL ===================== -->
+  <div id="app" class="hidden">
+
+    <!-- Janela principal: lista de contatos -->
+    <div id="main-window" class="window">
+      <div class="win-header">
+        <span class="butterfly">🦋</span>
+        <div class="win-title-box">
+          <b class="win-title">MSN Messenger</b>
+          <span class="win-sub">Conversinhas</span>
+        </div>
+        <div class="win-btns"><span class="wb-min">–</span><span class="wb-max">□</span><span class="wb-close">×</span></div>
+      </div>
+
+      <div class="menu-bar">
+        <span>Arquivo</span><span>Contatos</span><span>Ações</span><span>Ferramentas</span><span>Ajuda</span>
+      </div>
+
+      <div class="me-bar">
+        <div id="me-avatar" class="avatar-frame av-34" title="Clique para editar seu perfil"></div>
+        <div class="me-info" id="me-card">
+          <div class="me-name" id="me-name">Carregando…</div>
+          <div class="me-personal" id="me-personal" title="Clique para mudar sua mensagem pessoal">…</div>
+        </div>
+        <button id="profile-edit-btn" class="round-btn" title="Editar meu perfil (nome, foto, mensagem)">✏️</button>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="online">Favoritos</div>
+        <div class="tab" data-tab="all">Amigos e outros</div>
+      </div>
+
+      <div id="contact-list">
+        <div class="contact-group">Favoritos <span class="cnt">(0)</span></div>
+        <div id="online-contacts"></div>
+        <div class="contact-group">Amigos e outros <span class="cnt">(0)</span></div>
+        <div id="all-contacts"></div>
+        <div id="contacts-empty" class="empty-hint">Ninguém online ainda.<br>Convide um amigo para abrir o chat! 🦋</div>
+      </div>
+
+      <div class="main-footer">
+        <button id="status-select" class="status-select">
+          <span class="sdot s-online"></span>
+          <span id="status-label">Online</span>
+          <span class="caret">▼</span>
+        </button>
+        <div class="status-menu hidden" id="status-menu">
+          <button data-status="online" class="si"><span class="sdot s-online"></span>Online</button>
+          <button data-status="ausente" class="si"><span class="sdot s-away"></span>Ausente</button>
+          <button data-status="ocupado" class="si"><span class="sdot s-busy"></span>Ocupado</button>
+          <button id="sign-out" class="si"><span class="sdot s-off"></span>Sair do MSN</button>
+        </div>
+        <div class="ad-box">🦋 MSN Conversinhas — o clássico voltou!</div>
+      </div>
+    </div>
+
+    <!-- Janela de conversa -->
+    <div id="chat-window" class="window">
+      <div class="chat-header">
+        <div class="ch-info">
+          <div class="ch-title"><b>Conversa em grupo</b></div>
+          <div class="ch-sub" id="ch-sub">0 contato(s) online</div>
+        </div>
+        <div class="ch-actions">
+          <button class="act" title="Nudge! Chamar atenção">⚡<span class="act-lbl">Nudge</span></button>
+          <button class="act" title="Emoticons">😊<span class="act-lbl">Emoc.</span></button>
+          <button class="act" title="Alterar cor do fundo">🎨<span class="act-lbl">Fundo</span></button>
+          <button class="act" title="Limpar conversa">🗑<span class="act-lbl">Limpar</span></button>
+        </div>
+      </div>
+
+      <div id="conversation"></div>
+
+      <div id="typing-row" class="hidden"></div>
+
+      <div class="chat-input">
+        <div class="input-toolbar">
+          <span class="toolbar-note">Para o grupo — todos veem</span>
+        </div>
+        <div class="input-row">
+          <textarea id="message-input" rows="1" placeholder="Digite uma mensagem…" autocomplete="off"></textarea>
+          <button id="send-btn" class="btn send" type="button">Enviar</button>
+        </div>
+        <div class="emoticon-picker hidden" id="emoticon-picker"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: EDITAR PERFIL ===================== -->
+  <div id="profile-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-title">⚙️ Minhas Configurações</div>
+      <div class="modal-body">
+        <div class="avatar-pick-row">
+          <div id="modal-avatar-preview" class="avatar-frame st-online av-64"></div>
+          <button id="modal-avatar-btn" class="btn" type="button">📷 Trocar foto…</button>
+          <button id="modal-avatar-clear" class="btn ghost" type="button">Sem foto</button>
+          <input id="modal-avatar-input" type="file" accept="image/*" hidden>
+        </div>
+
+        <label class="field-label">Exibir nome</label>
+        <input id="modal-name" type="text" maxlength="24" autocomplete="off">
+
+        <label class="field-label">Cor do nome</label>
+        <div id="modal-colors"></div>
+
+        <label class="field-label">Mensagem pessoal (embaixo do nome)</label>
+        <input id="modal-message" type="text" maxlength="60" placeholder="🎵 No que você está pensando?" autocomplete="off">
+
+        <label class="field-label">Estado</label>
+        <select id="modal-status">
+          <option value="online">Online</option>
+          <option value="ausente">Ausente</option>
+          <option value="ocupado">Ocupado</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button id="modal-cancel" class="btn ghost" type="button">Cancelar</button>
+        <button id="modal-save" class="btn" type="button">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="nudge-overlay" class="hidden"></div>
+
+  <script src="/lib/socket.io.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
