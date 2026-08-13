@@ -129,8 +129,13 @@ def on_message(data):
     sid = request.sid
     if sid not in users:
         return
-    text = (data.get("text") or "").strip()
-    if not text or len(text) > 1500:
+    text = (data.get("text") or "").strip()[:1500]
+    image = data.get("image")
+    if isinstance(image, str) and image.startswith("data:"):
+        image = image[:2_000_000]
+    else:
+        image = None
+    if not text and not image:
         return
 
     entry = add_history(
@@ -143,6 +148,8 @@ def on_message(data):
             "sid": sid,
         }
     )
+    if image:
+        entry["image"] = image
     socketio.emit("message", entry)
 
 
@@ -217,4 +224,3 @@ if __name__ == "__main__":
     load_history()
     print("[MSN Conversinhas] http://127.0.0.1:5000")
     socketio.run(app, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)
-    
