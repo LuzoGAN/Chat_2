@@ -188,7 +188,7 @@ def on_update_profile(data):
 
 
 @socketio.on("nudge")
-def on_nudge():
+def on_nudge(*args):
     sid = request.sid
     if sid not in users:
         return
@@ -206,7 +206,7 @@ def on_nudge():
 
 
 @socketio.on("typing")
-def on_typing():
+def on_typing(*args):
     sid = request.sid
     if sid not in users:
         return
