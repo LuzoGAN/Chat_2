@@ -95,13 +95,14 @@
 
   function readGravityPreview() { /* placeholder para futura extensão */ }
 
-  function readImage(file, cb) {
+  function readImage(file, cb, opts = {}) {
     if (!file || !file.type.startsWith("image/")) return;
+    const max = opts.max || 96;
+    const mime = opts.type || "image/png";
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
       img.onload = () => {
-        const max = 96;
         let { width: w, height: h } = img;
         if (w > max || h > max) {
           const r = Math.min(max / w, max / h);
@@ -110,7 +111,7 @@
         const cv = document.createElement("canvas");
         cv.width = w; cv.height = h;
         cv.getContext("2d").drawImage(img, 0, 0, w, h);
-        cb(cv.toDataURL("image/png"));
+        cb(cv.toDataURL(mime, mime === "image/jpeg" ? 0.85 : undefined));
       };
       img.src = reader.result;
     };
@@ -194,10 +195,20 @@
         const { bubble: b } = newGroup(entry);
         bubble = b;
       }
-      const body = document.createElement("div");
-      body.className = "msg-body";
-      body.innerHTML = parseEmoticons(esc(entry.text));
-      bubble.appendChild(body);
+      if (entry.text) {
+        const body = document.createElement("div");
+        body.className = "msg-body";
+        body.innerHTML = parseEmoticons(esc(entry.text));
+        bubble.appendChild(body);
+      }
+      if (entry.image) {
+        const imgEl = document.createElement("img");
+        imgEl.className = "msg-img";
+        imgEl.src = entry.image;
+        imgEl.title = "Clique para ampliar";
+        imgEl.onclick = () => openImageViewer(entry.image);
+        bubble.appendChild(imgEl);
+      }
       if (entry.sid && entry.sid !== mySid()) SOUND.message();
     }
     if (nearBottom) autoScroll();
@@ -375,6 +386,27 @@
   });
 
   /* ==================== ENVIO ==================== */
+  function openImageViewer(src) {
+    const ov = document.createElement("div");
+    ov.className = "img-viewer";
+    const img = document.createElement("img");
+    img.src = src;
+    ov.appendChild(img);
+    ov.onclick = () => ov.remove();
+    document.body.appendChild(ov);
+  }
+
+  $("image-send-btn").onclick = () => $("image-input").click();
+  $("image-input").onchange = (e) => {
+    const f = e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    readImage(f, (url) => socket.emit("message", { image: url }), {
+      max: 900,
+      type: "image/jpeg",
+    });
+  };
+
   function send() {
     const input = $("message-input");
     const text = input.value.trim();
