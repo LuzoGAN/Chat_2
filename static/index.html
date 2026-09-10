@@ -16,7 +16,7 @@
           <span class="butterfly">🦋</span>
           <div class="login-title">
             <b>MSN Messenger</b>
-            <span class="login-sub">versão 7.5 • Brasil</span>
+            <span class="login-sub">versão 2009 • Brasil</span>
           </div>
         </div>
         <div class="win-btns"><span class="wb-min">–</span><span class="wb-max">□</span><span class="wb-close">×</span></div>
@@ -83,12 +83,16 @@
       </div>
 
       <div class="me-bar">
-        <div id="me-avatar" class="avatar-frame av-34" title="Clique para editar seu perfil"></div>
+        <div id="me-avatar" class="avatar-frame av-48" title="Clique para editar seu perfil"></div>
         <div class="me-info" id="me-card">
           <div class="me-name" id="me-name">Carregando…</div>
           <div class="me-personal" id="me-personal" title="Clique para mudar sua mensagem pessoal">…</div>
         </div>
         <button id="profile-edit-btn" class="round-btn" title="Editar meu perfil (nome, foto, mensagem)">✏️</button>
+      </div>
+
+      <div class="search-row">
+        <input id="contact-search" type="text" placeholder="Procurar contatos…" autocomplete="off">
       </div>
 
       <div class="tabs">
@@ -123,11 +127,15 @@
     <!-- Janela de conversa -->
     <div id="chat-window" class="window">
       <div class="chat-header">
-        <div class="ch-info">
-          <div class="ch-title"><b>Conversa em grupo</b></div>
-          <div class="ch-sub" id="ch-sub">0 contato(s) online</div>
+        <div class="ch-peer">
+          <div id="ch-avatar" class="avatar-frame av-34 st-online" title="Conversa em grupo"></div>
+          <div class="ch-info">
+            <div class="ch-title"><b>Conversa em grupo</b></div>
+            <div class="ch-sub" id="ch-sub">0 contato(s) online</div>
+          </div>
         </div>
         <div class="ch-actions">
+          <button class="act" id="notif-btn" title="Ativar notificações na tela">🔔<span class="act-lbl">Avisos</span></button>
           <button class="act" id="image-send-btn" title="Enviar uma imagem">📷<span class="act-lbl">Foto</span></button>
           <button class="act" title="Nudge! Chamar atenção">⚡<span class="act-lbl">Nudge</span></button>
           <button class="act" title="Emoticons">😊<span class="act-lbl">Emoc.</span></button>
@@ -137,19 +145,41 @@
         <input id="image-input" type="file" accept="image/*" hidden>
       </div>
 
+      <div class="to-line">Para: <b>todos do grupo</b> — todos veem</div>
+
       <div id="conversation"></div>
 
       <div id="typing-row" class="hidden"></div>
 
       <div class="chat-input">
-        <div class="input-toolbar">
-          <span class="toolbar-note">Para o grupo — todos veem</span>
+        <div class="fmt-toolbar" role="toolbar" aria-label="Formatação">
+          <button class="fmt-btn fb" id="fmt-bold" title="Negrito (**texto**)" type="button">B</button>
+          <button class="fmt-btn fi" id="fmt-italic" title="Itálico (//texto//)" type="button">I</button>
+          <button class="fmt-btn fu" id="fmt-underline" title="Sublinhado (__texto__)" type="button">U</button>
+          <span class="fmt-sep"></span>
+          <button class="fmt-btn" id="fmt-emo" title="Emoticons" type="button">😊</button>
+          <button class="fmt-btn" id="fmt-nudge" title="Chamar atenção" type="button">⚡</button>
+          <button class="fmt-btn" id="fmt-photo" title="Enviar foto" type="button">📷</button>
+          <span class="fmt-note">MSN 2009 • **negrito** • //itálico// • __sublinhado__</span>
         </div>
         <div class="input-row">
-          <textarea id="message-input" rows="1" placeholder="Digite uma mensagem…" autocomplete="off"></textarea>
+          <textarea id="message-input" rows="2" placeholder="Digite uma mensagem…" autocomplete="off"></textarea>
+        </div>
+        <div class="send-row">
+          <span class="send-hint">Arraste a foto pra cá • Ctrl+V cola • Enter envia</span>
           <button id="send-btn" class="btn send" type="button">Enviar</button>
         </div>
         <div class="emoticon-picker hidden" id="emoticon-picker"></div>
+      </div>
+      <div class="chat-statusbar"><span>🦋</span><span id="chat-status-text">MSN Conversinhas — conectando pessoas desde 1999</span></div>
+
+      <!-- Arrastar-e-soltar: jogue a imagem aqui -->
+      <div id="drop-overlay" class="hidden">
+        <div class="drop-box">
+          <div class="drop-ico">📷</div>
+          <b>Solte para enviar</b>
+          <span>A imagem vai direto para o grupo</span>
+        </div>
       </div>
     </div>
   </div>
@@ -190,6 +220,9 @@
   </div>
 
   <div id="nudge-overlay" class="hidden"></div>
+
+  <!-- Notificações toast (sobem do canto inferior direito) -->
+  <div id="toast-stack" aria-live="polite"></div>
 
   <script src="/lib/socket.io.min.js"></script>
   <script src="/app.js"></script>

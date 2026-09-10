@@ -221,6 +221,8 @@ def index():
 
 
 if __name__ == "__main__":
+    import os
     load_history()
-    print("[MSN Conversinhas] http://127.0.0.1:5000")
-    socketio.run(app, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)
+    port = int(os.environ.get("PORT", 5000))
+    print(f"[MSN Conversinhas] http://127.0.0.1:{port}")
+    socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)
