@@ -1,4 +1,7 @@
 # 🦋 MSN Conversinhas
+https://terapia-rs.onrender.com/
+<img width="473" height="599" alt="image" src="https://github.com/user-attachments/assets/7535626f-e617-41ba-81dd-5d64723e11a5" />
+
 
 Releitura nostálgica do **MSN / Windows Live Messenger 2009** (auge no Brasil 🇧🇷) feita com **Python + Flask + Socket.IO** no servidor e **HTML + CSS + JS puro** no cliente. Sem senha: é só escolher um apelido e entrar.
 
@@ -59,14 +62,6 @@ Chat_2/
 └── data/history.json  # histórico (gerado em execução)
 ```
 
-## 🗺️ Ideias futuras
-
-- [ ] Winks gigantes com som
-- [ ] Pacotes de emoticons animados clássicos
-- [ ] Conversas 1-a-1 em abas
-- [ ] Status invisível
-- [ ] Histórico em banco de dados (SQLite/Postgres)
-- [ ] Push com Service Worker (avisar até com o navegador fechado)
 
 ---
 
